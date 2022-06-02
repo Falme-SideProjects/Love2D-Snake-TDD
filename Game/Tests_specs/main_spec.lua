@@ -1,0 +1,5 @@
+describe('Sanity Check =>', function()
+	it("Check Sanity", function()
+		assert.is_equal(1, 1)
+	end)
+end)
