@@ -1,11 +1,6 @@
+local mockLove = require("Tests_specs.mocked_love")
 local game = require("Scripts.game")
 
-_G.error = function(message, levels) return true end
-_G.love = {
-	graphics = {
-		print = function(text, x, y) end
-	}
-}
 
 describe('Sanity Check =>', function()
 	it("Check Sanity", function()
@@ -35,3 +30,40 @@ describe('Check if main methods exists =>', function()
 	end)
 end)
 
+
+describe('Main Calls for Player =>', function()
+
+	local player = require("Scripts.player")()
+
+	it("Check if load calls player load", function()
+		local s = spy.on(game.player, "Load")
+		
+		game:Load()
+
+		assert.spy(s).was_called()
+	end)
+	
+	it("Check if Update calls player Update", function()
+		local s = spy.on(game.player, "Update")
+		
+		game:Update(1)
+
+		assert.spy(s).was_called()
+	end)
+	
+	it("Check if KeyPressed calls player KeyPressed", function()
+		local s = spy.on(game.player, "KeyPressed")
+		
+		game:KeyPressed()
+
+		assert.spy(s).was_called()
+	end)
+	
+	it("Check if Draw calls player Draw", function()
+		local s = spy.on(game.player, "Draw")
+		
+		game:Draw()
+
+		assert.spy(s).was_called()
+	end)
+end)
