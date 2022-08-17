@@ -1,11 +1,17 @@
 local Player = require("Scripts.player")
+local Grid = require("Scripts.grid")
 
 Game = {
-	player = Player()
+	player = Player(),
+	grid = Grid()
 }
 
 function Game:Load()
-	self.player:Load()
+	self.grid.width = 500
+	self.grid.height = 500
+	self.grid.scale = 10
+
+	self.player:Load(self.grid)
 end
 
 function Game:Update(dt)
