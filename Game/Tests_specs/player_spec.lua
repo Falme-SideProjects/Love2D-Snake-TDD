@@ -1,6 +1,7 @@
 local mockLove = require("Tests_specs.mocked_love")
 local Player = require("Scripts.player")
 local Grid = require("Scripts.grid")
+local Walls = require("Scripts.walls")
 
 describe('Player => Positioning =>', function()
 	
@@ -56,14 +57,16 @@ end)
 
 describe('Player => Movementation Update =>', function()
 	
-	local player, grid
+	local player, grid, walls
 	before_each(function()
 		player = Player()
 		grid = Grid()
+		walls = Walls()
 		grid.width = 128
 		grid.height = 128
 		grid.scale = 4
-		player:Load(grid)
+		walls:Load(grid)
+		player:Load(grid,walls)
 	end)
 
 	it("On call update before Load, move to right +1", function()
@@ -77,6 +80,30 @@ describe('Player => Movementation Update =>', function()
 		player:Update(1)
 		assert.is_equal(0, player.y)
 	end)
+
+	-- LAST DIRECTION TESTS
+	it("On a same direction, after moving, cache the lastDirection (right)", function()
+		player.velocity = 1
+		
+		player.direction = 0
+		player:Update(1)
+		player.direction = 0
+		
+		assert.is_equal(0, player.direction)
+		assert.is_equal(0, player.lastDirection)
+	end)
+
+	it("On a same direction, after moving, cache the lastDirection (down)", function()
+		player.velocity = 1
+		
+		player.direction = 1
+		player:Update(1)
+		player.direction = 1
+		
+		assert.is_equal(1, player.direction)
+		assert.is_equal(1, player.lastDirection)
+	end)
+
 --[[
 
 	it("On direction is zero (0) player move to right", function()
@@ -150,12 +177,38 @@ describe('Player => Receiving Input =>', function()
 	end)
 	
 	it("On 'left' being called, the direction is left (2)", function()
+		player.direction = 1
 		player:KeyPressed("left")
 		assert.is_equal(2, player.direction)
 	end)
 	
 	it("On 'up' being called, the direction is up (3)", function()
 		player:KeyPressed("up")
+		assert.is_equal(3, player.direction)
+	end)
+
+	
+	it("On 'left' being called, and direction currently right the direction is still right (0)", function()
+		player.direction = 0
+		player:KeyPressed("left")
+		assert.is_equal(0, player.direction)
+	end)
+
+	it("On 'right' being called, and direction currently left the direction is still left (2)", function()
+		player.direction = 2
+		player:KeyPressed("right")
+		assert.is_equal(2, player.direction)
+	end)
+	
+	it("On 'up' being called, and direction currently down the direction is still down (1)", function()
+		player.direction = 1
+		player:KeyPressed("up")
+		assert.is_equal(1, player.direction)
+	end)
+	
+	it("On 'down' being called, and direction currently up the direction is still up (3)", function()
+		player.direction = 3
+		player:KeyPressed("down")
 		assert.is_equal(3, player.direction)
 	end)
 
@@ -222,5 +275,64 @@ describe('Player => Grid Reference =>', function()
 	it("Check if initially the grid is not nil after Load()", function()
 		player:Load(grid)
 		assert.is_not_equal(nil, player.grid)
+	end)
+end)
+
+describe('Player => Walls Collisions => ', function()
+	
+	local player, grid, walls
+	before_each(function()
+		player = Player()
+		walls = Walls()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+	
+	it("CheckIfIsWall X Y Method boolean return false", function()
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+
+		assert.is_equal(false, player:CheckIfIsWall(1,1))
+		assert.is_equal(false, player:CheckIfIsWall(2,2))
+	end)
+	
+	it("CheckIfIsWall X Y Method boolean return true", function()
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+
+		assert.is_equal(true, player:CheckIfIsWall(0,0))
+		assert.is_equal(true, player:CheckIfIsWall(1,0))
+		assert.is_equal(true, player:CheckIfIsWall(0,1))
+		assert.is_equal(true, player:CheckIfIsWall(3,3))
+	end)
+
+
+	it("On player move to a wall, call Death method", function()
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+		player:SetPositionAt(2,2)
+
+		local s = spy.on(player, "Death")
+		player:Update(1)
+		assert.spy(s).was_called()
+		
+	end)
+
+	it("On player move to an empty space, do not call Death method", function()
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+		player:SetPositionAt(1,1)
+
+		local s = spy.on(player, "Death")
+		player:Update(1)
+		assert.spy(s).was_called(0)
+		
 	end)
 end)

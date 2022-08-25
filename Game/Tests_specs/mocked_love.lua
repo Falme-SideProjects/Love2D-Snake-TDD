@@ -1,5 +1,8 @@
 _G.error = function(message, levels) return true end
 _G.love = {
+	window = {
+		close = function() return "close()" end
+	},
 	graphics = {
 		print = function(text, x, y) end,
 		rectangle = function(type, x,y,w,h)

@@ -67,3 +67,29 @@ describe('Main Calls for Player =>', function()
 		assert.spy(s).was_called()
 	end)
 end)
+
+describe('Main Calls for Walls => ', function()
+	
+	local walls = require("Scripts.walls")()
+
+	-- before_each(function()
+	-- 	walls = Walls()
+	-- end)
+
+	it("Check if Wall Load is being called", function()
+		local s = spy.on(game.walls, "Load")
+		
+		game:Load()
+
+		assert.spy(s).was_called()
+	end)
+	
+	it("Check if Wall Draw is being called", function()
+		local s = spy.on(game.walls, "Draw")
+		
+		game:Draw()
+
+		assert.spy(s).was_called()
+	end)
+
+end)
