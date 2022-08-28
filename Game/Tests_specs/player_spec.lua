@@ -161,55 +161,6 @@ describe('Player => Movementation Update =>', function()
 		assert.is_equal(1, player.lastDirection)
 	end)
 
-
---[[
-
-	it("On direction is zero (0) player move to right", function()
-		
-		player.direction = 0
-		player.velocity = 1
-		player:Update(1)
-		assert.is_equal(33, player.x)
-	end)
-	
-	it("On direction is one (1) player move to down", function()
-		player:Load()
-		player.direction = 1
-		player.velocity = 1
-		player:Update(1)
-		assert.is_equal(33, player.y)
-	end)
-	
-	it("On direction is two (2) player move to left", function()
-		player:Load()
-		player.direction = 2
-		player.velocity = 1
-		player:Update(1)
-		assert.is_equal(31, player.x)
-	end)
-	
-	it("On direction is three (3) player move to up", function()
-		player:Load()
-		player.direction = 3
-		player.velocity = 1
-		player:Update(1)
-		assert.is_equal(31, player.y)
-	end)
-	
-	it("Velocity at 0.5 influences the result to 32.5", function()
-		player:Load()
-		player.velocity = 0.5
-		player:Update(1)
-		assert.is_equal(32.5, player.x)
-	end)
-	
-	it("Velocity at 2 influences the result to 34", function()
-		player:Load()
-		player.velocity = 2
-		player:Update(1)
-		assert.is_equal(34, player.x)
-	end)
-	]]
 end)
 
 describe('Player => Receiving Input =>', function()

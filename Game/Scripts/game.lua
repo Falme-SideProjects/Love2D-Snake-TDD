@@ -1,11 +1,13 @@
 local Player = require("Scripts.player")
 local Grid = require("Scripts.grid")
 local Walls = require("Scripts.walls")
+local Apple = require("Scripts.apple")
 
 Game = {
 	player = Player(),
 	grid = Grid(),
-	walls = Walls()
+	walls = Walls(),
+	apple = Apple(),
 }
 
 function Game:Load()
@@ -15,6 +17,7 @@ function Game:Load()
 
 	self.walls:Load(self.grid)
 	self.player:Load(self.grid, self.walls)
+	self.apple:Load(self.grid)
 
 	self.player:SetPositionAt(1,1)
 end
@@ -35,6 +38,7 @@ end
 function Game:Draw()
 	self.player:Draw()
 	self.walls:Draw()
+	self.apple:Draw()
 end
 
 return Game

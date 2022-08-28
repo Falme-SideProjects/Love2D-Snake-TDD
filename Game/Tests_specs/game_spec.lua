@@ -93,3 +93,31 @@ describe('Main Calls for Walls => ', function()
 	end)
 
 end)
+
+
+
+describe('Main Calls for Apple => ', function()
+	
+	local apple = require("Scripts.apple")()
+
+	-- before_each(function()
+	-- 	Apple = Apple()
+	-- end)
+
+	it("Check if Apple Load is being called", function()
+		local s = spy.on(game.apple, "Load")
+		
+		game:Load()
+
+		assert.spy(s).was_called()
+	end)
+	
+	it("Check if Apple Draw is being called", function()
+		local s = spy.on(game.apple, "Draw")
+		
+		game:Draw()
+
+		assert.spy(s).was_called()
+	end)
+
+end)

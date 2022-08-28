@@ -7,7 +7,8 @@ _G.love = {
 		print = function(text, x, y) end,
 		rectangle = function(type, x,y,w,h)
 			return type,x,y,w,h
-		end
+		end,
+		setColor = function (r,g,b,a) end
 	},
 	keypressed = function(key) return key end
 }
