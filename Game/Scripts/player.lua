@@ -59,6 +59,8 @@ return function ()
 			else
 				self:SetPositionAt(self.pointX, self.pointY-1)
 			end
+
+			self.lastDirection = self.direction
 		end
 
 		if self:CheckIfIsWall(self.pointX, self.pointY) then
@@ -71,10 +73,10 @@ return function ()
 	end
 
 	function Player:KeyPressed(key)
-		if key == "right" and self.direction ~= 2 then self.direction = 0
-		elseif key == "down" and self.direction ~= 3 then self.direction = 1
-		elseif key == "left" and self.direction ~= 0 then self.direction = 2
-		elseif key == "up" and self.direction ~= 1 then self.direction = 3
+		if key == "right" and self.lastDirection ~= 2 then self.direction = 0
+		elseif key == "down" and self.lastDirection ~= 3 then self.direction = 1
+		elseif key == "left" and self.lastDirection ~= 0 then self.direction = 2
+		elseif key == "up" and self.lastDirection ~= 1 then self.direction = 3
 		end
 	end
 	

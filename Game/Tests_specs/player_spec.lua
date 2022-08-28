@@ -104,6 +104,64 @@ describe('Player => Movementation Update =>', function()
 		assert.is_equal(1, player.lastDirection)
 	end)
 
+	it("On a same direction, after moving, cache the lastDirection (left)", function()
+		player.velocity = 1
+		
+		player.direction = 2
+		player:Update(1)
+		player.direction = 2
+		
+		assert.is_equal(2, player.direction)
+		assert.is_equal(2, player.lastDirection)
+	end)
+
+	it("On a same direction, after moving, cache the lastDirection (up)", function()
+		player.velocity = 1
+		
+		player.direction = 3
+		player:Update(1)
+		player.direction = 3
+		
+		assert.is_equal(3, player.direction)
+		assert.is_equal(3, player.lastDirection)
+	end)
+
+	
+	it("last direction is right, and current direction is down", function()
+		player.velocity = 1
+		
+		player.direction = 0
+		player:Update(1)
+		player:KeyPressed("down")
+		
+		assert.is_equal(1, player.direction)
+		assert.is_equal(0, player.lastDirection)
+	end)
+	
+	it("last direction is right, and current direction is left", function()
+		player.velocity = 1
+		
+		player.direction = 0
+		player:Update(1)
+		player:KeyPressed("left")
+		
+		assert.is_equal(0, player.direction)
+		assert.is_equal(0, player.lastDirection)
+	end)
+	
+	it("last direction is right, and current direction is down->left", function()
+		player.velocity = 1
+		
+		player.direction = 0
+		player:KeyPressed("down")
+		player:KeyPressed("left")
+		player:Update(1)
+		
+		assert.is_equal(1, player.direction)
+		assert.is_equal(1, player.lastDirection)
+	end)
+
+
 --[[
 
 	it("On direction is zero (0) player move to right", function()
@@ -167,6 +225,7 @@ describe('Player => Receiving Input =>', function()
 	
 	it("On 'right' being called, the direction is right (0)", function()
 		player.direction = 1
+		player.lastDirection = player.direction
 		player:KeyPressed("right")
 		assert.is_equal(0, player.direction)
 	end)
@@ -178,6 +237,7 @@ describe('Player => Receiving Input =>', function()
 	
 	it("On 'left' being called, the direction is left (2)", function()
 		player.direction = 1
+		player.lastDirection = player.direction
 		player:KeyPressed("left")
 		assert.is_equal(2, player.direction)
 	end)
@@ -190,24 +250,28 @@ describe('Player => Receiving Input =>', function()
 	
 	it("On 'left' being called, and direction currently right the direction is still right (0)", function()
 		player.direction = 0
+		player.lastDirection = player.direction
 		player:KeyPressed("left")
 		assert.is_equal(0, player.direction)
 	end)
 
 	it("On 'right' being called, and direction currently left the direction is still left (2)", function()
 		player.direction = 2
+		player.lastDirection = player.direction
 		player:KeyPressed("right")
 		assert.is_equal(2, player.direction)
 	end)
 	
 	it("On 'up' being called, and direction currently down the direction is still down (1)", function()
 		player.direction = 1
+		player.lastDirection = player.direction
 		player:KeyPressed("up")
 		assert.is_equal(1, player.direction)
 	end)
 	
 	it("On 'down' being called, and direction currently up the direction is still up (3)", function()
 		player.direction = 3
+		player.lastDirection = player.direction
 		player:KeyPressed("down")
 		assert.is_equal(3, player.direction)
 	end)
