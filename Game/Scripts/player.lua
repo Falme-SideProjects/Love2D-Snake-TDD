@@ -9,6 +9,7 @@ return function ()
 		lastDirection = 0,
 		grid = nil,
 		wall = nil,
+		apple = nil,
 		timespanMovement = 0,
 		size = {
 			width = 32,
@@ -16,12 +17,13 @@ return function ()
 		}
 	}
 	
-	function Player:Load(grid, wall)
+	function Player:Load(grid, wall, apple)
 		self.x = 0
 		self.y = 0
 		self.velocity = 2
 		self.grid = grid
 		self.wall = wall
+		self.apple = apple
 		self.size.width = (self.grid.width/self.grid.scale)
 		self.size.height = (self.grid.height/self.grid.scale)
 	end

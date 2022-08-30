@@ -23,6 +23,33 @@ describe('Apple => Load => ', function()
 	end)
 end)
 
+describe('Apple => Positioning =>', function()
+	
+	local apple
+	local grid
+
+	before_each(function()
+		apple = Apple()
+		grid = Grid()
+		grid.width = 40
+		grid.height = 40
+		grid.scale = 4
+		apple:Load(grid)
+	end)
+
+	it("Coordinates X and Y exists", function()
+		assert.is_equal(apple.pointX, 0)
+		assert.is_equal(apple.pointY, 0)
+	end)
+
+	it("SetPosition change pointX pointY", function()
+		
+		apple:SetPosition(2,3)
+		assert.is_equal(apple.pointX, 2)
+		assert.is_equal(apple.pointY, 3)
+	end)
+end)
+
 describe('Apple => Draw => ', function()
 	
 	local grid
@@ -82,9 +109,9 @@ describe('Apple => Draw => ', function()
 	end)
 
 	it("base color is red", function()
-		assert.is_equal(255, apple.baseColor.r)
+		assert.is_equal(236, apple.baseColor.r)
 		assert.is_equal(0, apple.baseColor.g)
-		assert.is_equal(0, apple.baseColor.b)
+		assert.is_equal(140, apple.baseColor.b)
 		assert.is_equal(255, apple.baseColor.a)
 	end)
 
@@ -116,6 +143,21 @@ describe('Apple => Draw => ', function()
 		apple:Draw()
 
 		assert.spy(s).was_called(2)
+	end)
+
+	it("If position point is on X:1 and Y:2, 40x40:4 , draw at 10x20", function()
+		
+		grid.width = 40
+		grid.height = 40
+		grid.scale = 4
+		
+		apple:Load(grid)
+		apple:SetPosition(1,2)
+
+		local type, x, y, w, h = apple:Draw()
+
+		assert.is_equal(10, x)
+		assert.is_equal(20, y)
 	end)
 
 end)

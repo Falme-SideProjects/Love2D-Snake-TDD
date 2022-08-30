@@ -16,10 +16,11 @@ function Game:Load()
 	self.grid.scale = 10
 
 	self.walls:Load(self.grid)
-	self.player:Load(self.grid, self.walls)
 	self.apple:Load(self.grid)
+	self.player:Load(self.grid, self.walls, self.apple)
 
 	self.player:SetPositionAt(1,1)
+	self.apple:SetPosition(3,3)
 end
 
 function Game:Update(dt)

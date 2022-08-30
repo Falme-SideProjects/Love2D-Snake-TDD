@@ -2,6 +2,7 @@ local mockLove = require("Tests_specs.mocked_love")
 local Player = require("Scripts.player")
 local Grid = require("Scripts.grid")
 local Walls = require("Scripts.walls")
+local Apple = require("Scripts.apple")
 
 describe('Player => Positioning =>', function()
 	
@@ -350,4 +351,27 @@ describe('Player => Walls Collisions => ', function()
 		assert.spy(s).was_called(0)
 		
 	end)
+end)
+
+describe('Player => Apple Collisions => ', function()
+	local player, grid, apple
+	before_each(function()
+		player = Player()
+		apple = Apple()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+
+	it("Check if player loads apple", function()
+		player:Load(grid,nil,apple)
+		assert.is_not_equal(player.apple, nil)
+	end)
+
+	it("Collided with an apple returns false", function()
+		assert.is_equal(0, 1)
+	end)
+
 end)
