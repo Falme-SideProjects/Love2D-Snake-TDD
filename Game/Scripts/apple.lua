@@ -40,5 +40,10 @@ return function()
 		self.pointY = y
 	end
 
+	function Apple:RandomizePositioning()
+		self.pointX = 0
+		self.pointY = 0
+	end
+
 	return Apple
 end

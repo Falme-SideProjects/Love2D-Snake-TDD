@@ -371,7 +371,46 @@ describe('Player => Apple Collisions => ', function()
 	end)
 
 	it("Collided with an apple returns false", function()
-		assert.is_equal(0, 1)
+
+		player:Load(grid, nil, apple)
+
+		apple:SetPosition(3,2);
+
+		assert.is_equal(false, player:CheckIfIsApple(1,2))
 	end)
+
+	it("Collided with an apple returns true", function()
+
+		player:Load(grid, nil, apple)
+
+		apple:SetPosition(3,2);
+
+		assert.is_equal(true, player:CheckIfIsApple(3,2))
+	end)
+
+	it("Check if Collided with apple is being called", function()
+		local s = spy.on(player, "CheckIfIsApple")
+		
+		player:Load(grid, nil, apple)
+
+		player:Update(1)
+
+		assert.spy(s).was_called(1)
+	end)
+
+
+	it("After the player collided with the apple, re-randomize position", function()
+		local s = spy.on(apple, "RandomizePosition")
+		
+		player:Load(grid, nil, apple)
+
+		player:SetPositionAt(3,2)
+		apple:SetPosition(3,2)
+
+		player:Update(0)
+
+		assert.spy(s).was_called(1)
+	end)
+
 
 end)

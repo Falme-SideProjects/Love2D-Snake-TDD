@@ -46,6 +46,14 @@ return function ()
 		
 		return false --
 	end
+
+	function Player:CheckIfIsApple(x,y)
+
+		if self.apple.pointX == x and self.apple.pointY == y then
+			return true
+		end
+		return false
+	end
 	
 	function Player:Update(dt)
 		self.timespanMovement = self.timespanMovement+(dt * self.velocity)
@@ -65,8 +73,12 @@ return function ()
 			self.lastDirection = self.direction
 		end
 
-		if self:CheckIfIsWall(self.pointX, self.pointY) then
+		if self.wall ~= nil and self:CheckIfIsWall(self.pointX, self.pointY) then
 			self:Death()
+		end
+
+		if self.apple ~= nil and self:CheckIfIsApple(self.pointX, self.pointY) then
+			self.apple:RandomizePosition()
 		end
 	end
 

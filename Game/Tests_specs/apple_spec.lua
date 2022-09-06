@@ -161,3 +161,49 @@ describe('Apple => Draw => ', function()
 	end)
 
 end)
+
+describe('Apple => RandomizePositioning => ', function()
+	
+	local grid
+	local apple
+	
+	before_each(function()
+		apple = Apple()
+		grid = Grid()
+	end)
+
+	it("RandomizePositioning, grid 1,1 return 0x0", function()
+		
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 1
+		
+		apple:Load(grid)
+
+		apple:SetPosition(3,2)
+
+		apple:RandomizePositioning()
+
+		assert.is_equal(apple.pointX, 0)
+		assert.is_equal(apple.pointY, 0)
+	end)
+	
+
+	-- it("RandomizePositioning, grid 2,2 return 0x0,0x1,1x0 or 1x1", function()
+		
+	-- 	grid.width = 10
+	-- 	grid.height = 10
+	-- 	grid.scale = 2
+		
+	-- 	apple:Load(grid)
+
+	-- 	local lastX = apple.pointX
+	-- 	local lastY = apple.pointY
+
+	-- 	apple:RandomizePositioning()
+
+	-- 	assert.is_not_equal(apple.pointX, lastX)
+	-- 	assert.is_not_equal(apple.pointY, lastY)
+	-- end)
+
+end)
