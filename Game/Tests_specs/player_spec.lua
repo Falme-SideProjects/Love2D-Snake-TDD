@@ -400,9 +400,13 @@ describe('Player => Apple Collisions => ', function()
 
 
 	it("After the player collided with the apple, re-randomize position", function()
-		local s = spy.on(apple, "RandomizePosition")
+		local s = spy.on(apple, "RandomizePositioning")
 		
-		player:Load(grid, nil, apple)
+		local walls = Walls()
+
+		walls:Load(grid)
+		player:Load(grid, walls, apple)
+		apple:Load(grid)
 
 		player:SetPositionAt(3,2)
 		apple:SetPosition(3,2)

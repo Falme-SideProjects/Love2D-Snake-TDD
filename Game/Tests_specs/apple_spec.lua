@@ -1,6 +1,8 @@
 local mockLove = require("Tests_specs.mocked_love")
 local Apple = require("Scripts.apple")
 local Grid = require("Scripts.grid")
+local Randomizer = require("Scripts.randomizer")
+local Walls = require("Scripts.walls")
 
 describe('Apple => Load => ', function()
 	
@@ -188,22 +190,72 @@ describe('Apple => RandomizePositioning => ', function()
 		assert.is_equal(apple.pointY, 0)
 	end)
 	
-
-	-- it("RandomizePositioning, grid 2,2 return 0x0,0x1,1x0 or 1x1", function()
+	it("On randomize apple new position, is calling randomizer", function()
+		local s = spy.on(apple.randomizer, "GetRandom")
+			
 		
-	-- 	grid.width = 10
-	-- 	grid.height = 10
-	-- 	grid.scale = 2
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 2
 		
-	-- 	apple:Load(grid)
+		apple:Load(grid)
 
-	-- 	local lastX = apple.pointX
-	-- 	local lastY = apple.pointY
+		apple:SetPosition(3,2)
 
-	-- 	apple:RandomizePositioning()
+		apple:RandomizePositioning()
 
-	-- 	assert.is_not_equal(apple.pointX, lastX)
-	-- 	assert.is_not_equal(apple.pointY, lastY)
-	-- end)
+		assert.spy(s).was_called(2)
+	end)
+
+	it("RandomizePositioning, grid 2,2 return 0x0,0x1,1x0 or 1x1", function()
+		
+		local list = {}
+
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 2
+		
+		apple:Load(grid)
+
+		for i=1, 30, 1 do
+			apple:RandomizePositioning()
+			list[apple.pointX .. "" .. apple.pointY] = 1
+		end
+
+		assert.is_equal(1, list["00"])
+		assert.is_equal(1, list["01"])
+		assert.is_equal(1, list["10"])
+		assert.is_equal(1, list["11"])
+		assert.is_equal(nil, list["20"])
+	end)
+
+	it("apple randomized position cannot be on a wall", function()
+		
+		local list = {}
+
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 3
+		
+		apple:Load(grid)
+
+		local walls = Walls()
+
+		walls:Load(grid)
+
+		for i=1, 30, 1 do
+			apple:RandomizePositioning(walls:GetWallPositions())
+			list[apple.pointX .. "" .. apple.pointY] = 1
+		end
+		
+		assert.is_equal(1, list["11"])
+		assert.is_equal(nil, list["10"])
+		assert.is_equal(nil, list["20"])
+		assert.is_equal(nil, list["01"])
+		assert.is_equal(nil, list["21"])
+		assert.is_equal(nil, list["02"])
+		assert.is_equal(nil, list["12"])
+		assert.is_equal(nil, list["22"])
+	end)
 
 end)

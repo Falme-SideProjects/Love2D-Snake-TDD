@@ -38,9 +38,8 @@ return function ()
 
 	function Player:CheckIfIsWall(x,y)
 		for _, coord in ipairs(self.wall:GetWallPositions()) do
-			if self.grid:GetPositionAt(x,y).x == coord.x and
-				self.grid:GetPositionAt(x,y).y == coord.y then
-					return true
+			if x == coord.x and y == coord.y then
+				return true
 			end
 		end
 		
@@ -78,7 +77,7 @@ return function ()
 		end
 
 		if self.apple ~= nil and self:CheckIfIsApple(self.pointX, self.pointY) then
-			self.apple:RandomizePosition()
+			self.apple:RandomizePositioning(self.wall:GetWallPositions())
 		end
 	end
 

@@ -2,12 +2,6 @@ local mockLove = require("Tests_specs.mocked_love")
 local Walls = require("Scripts.walls")
 local Grid = require("Scripts.grid")
 
-describe('Sanity Check =>', function()
-	it("Check Sanity", function()
-		assert.is_equal(1, 1)
-	end)
-end)
-
 describe('Walls => Get All positions of grid =>', function()
 	
 	local grid
@@ -31,14 +25,14 @@ describe('Walls => Get All positions of grid =>', function()
 		assert.is_equal(0, positions[1].x)
 		assert.is_equal(0, positions[1].y)
 
-		assert.is_equal(10, positions[2].x)
+		assert.is_equal(1, positions[2].x)
 		assert.is_equal(0, positions[2].y)
 
 		assert.is_equal(0, positions[3].x)
-		assert.is_equal(10, positions[3].y)
+		assert.is_equal(1, positions[3].y)
 
-		assert.is_equal(10, positions[4].x)
-		assert.is_equal(10, positions[4].y)
+		assert.is_equal(1, positions[4].x)
+		assert.is_equal(1, positions[4].y)
 	end)
 
 	
@@ -57,22 +51,22 @@ describe('Walls => Get All positions of grid =>', function()
 		assert.is_equal(0, positions[1].x)
 		assert.is_equal(0, positions[1].y)
 
-		assert.is_equal(10, positions[2].x)
+		assert.is_equal(1, positions[2].x)
 		assert.is_equal(0, positions[2].y)
 		
-		assert.is_equal(20, positions[3].x)
+		assert.is_equal(2, positions[3].x)
 		assert.is_equal(0, positions[3].y)
 		
 		
 		assert.is_equal(0, positions[4].x)
-		assert.is_equal(10, positions[4].y)
+		assert.is_equal(1, positions[4].y)
 		
-		assert.is_equal(20, positions[5].x)
-		assert.is_equal(10, positions[5].y)
+		assert.is_equal(2, positions[5].x)
+		assert.is_equal(1, positions[5].y)
 
 		
 		assert.is_equal(0, positions[6].x)
-		assert.is_equal(20, positions[6].y)
+		assert.is_equal(2, positions[6].y)
 	end)
 end)
 

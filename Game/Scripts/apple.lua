@@ -1,6 +1,9 @@
+local Randomizer = require("Scripts.randomizer")
 return function()
+
 	local Apple = {
 		grid = nil,
+		randomizer = Randomizer(),
 		baseColor = {
 			r = 236,
 			g = 0,
@@ -40,9 +43,20 @@ return function()
 		self.pointY = y
 	end
 
-	function Apple:RandomizePositioning()
-		self.pointX = 0
-		self.pointY = 0
+	function Apple:RandomizePositioning(excludeA)
+
+		::Randomize::
+		self.pointX = self.randomizer:GetRandom(0,self.grid.scale-1)
+		self.pointY = self.randomizer:GetRandom(0,self.grid.scale-1)
+
+		if excludeA == nil then return end
+
+		for _, value in ipairs(excludeA) do
+			if value.x == self.pointX and value.y == self.pointY then
+				
+				goto Randomize
+			end
+		end
 	end
 
 	return Apple

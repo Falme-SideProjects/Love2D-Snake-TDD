@@ -1,6 +1,6 @@
 local Randomizer = require("Scripts.randomizer")
 
-describe('Randomizer => GetRandom =>', function()
+describe('Randomizer => GetRandom => #ignore', function()
 	
 	local randomizer
 	before_each(function()
@@ -13,8 +13,13 @@ describe('Randomizer => GetRandom =>', function()
 
 	it("Randomizer returns different numbers", function()
 		
-		local responseA = randomizer:GetRandom()
-		local responseB = randomizer:GetRandom()
+		local responseA, responseB
+
+		while responseA == responseB do
+			responseA = randomizer:GetRandom()
+			responseB = randomizer:GetRandom()
+		end
+
 
 		assert.is_not_equal(responseA, responseB)
 	end)
@@ -33,13 +38,24 @@ describe('Randomizer => GetRandom =>', function()
 		
 		local list = {}
 
-		for i=1, 50, 1 do
+		for i=1, 200, 1 do
 			local n = randomizer:GetRandom(12)
-			list[n] = (list[n] or 0)+1
+			list[n] = 1
+			if i % 12 == 0 then
+				local sum = 0
+				for a=1, 12, 1 do
+					if list[a] ~= nil then
+						sum = sum+1
+					end
+				end
+				if sum >= 12 then
+					break
+				end
+			end
 		end
 
 		for a=1, 12, 1 do
-			assert.is_equal(true, (list[a] >= 1))
+			assert.is_equal(true, (list[a] == 1))
 		end
 	end)
 

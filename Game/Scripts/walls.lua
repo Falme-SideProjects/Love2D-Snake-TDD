@@ -8,7 +8,7 @@ return function()
 		self.grid = grid
 		self.positions = self:DefineWallPositions()
 	end
-
+	-- self.grid:GetPositionAt(j,i)
 	function Walls:DefineWallPositions()
 		local result = {}
 
@@ -16,10 +16,10 @@ return function()
 			for j = 0, self.grid.scale-1, 1 do
 				if(i > 0 and i < self.grid.scale-1 and j>0) then 
 					j = self.grid.scale-1
-					table.insert(result,self.grid:GetPositionAt(j,i))
+					table.insert(result,{x=j,y=i})
 					break
 				end
-				table.insert(result,self.grid:GetPositionAt(j,i))
+				table.insert(result,{x=j,y=i})
 			end
 		end
 
@@ -35,7 +35,7 @@ return function()
 		local places = self:GetWallPositions()
 
 		for _, coord in ipairs(places) do
-			love.graphics.rectangle("fill", coord.x, coord.y,(self.grid.width/self.grid.scale),(self.grid.height/self.grid.scale))
+			love.graphics.rectangle("fill", self.grid:GetPositionAt(coord.x,coord.y).x, self.grid:GetPositionAt(coord.x,coord.y).y,(self.grid.width/self.grid.scale),(self.grid.height/self.grid.scale))
 		end
 	end
 
