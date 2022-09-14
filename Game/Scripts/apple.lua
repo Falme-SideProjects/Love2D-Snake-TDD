@@ -43,20 +43,28 @@ return function()
 		self.pointY = y
 	end
 
-	function Apple:RandomizePositioning(excludeA)
+	function Apple:RandomizePositioning(excludeA, excludeB)
 
 		::Randomize::
 		self.pointX = self.randomizer:GetRandom(0,self.grid.scale-1)
 		self.pointY = self.randomizer:GetRandom(0,self.grid.scale-1)
 
-		if excludeA == nil then return end
+		if excludeA == nil and excludeB == nil then return end
 
-		for _, value in ipairs(excludeA) do
-			if value.x == self.pointX and value.y == self.pointY then
-				
+		if excludeA ~= nil then 
+			for _, value in ipairs(excludeA) do
+				if value.x == self.pointX and value.y == self.pointY then
+					goto Randomize
+				end
+			end
+		end
+
+		if excludeB ~= nil then
+			if excludeB.x == self.pointX and excludeB.y == self.pointY then
 				goto Randomize
 			end
 		end
+
 	end
 
 	return Apple

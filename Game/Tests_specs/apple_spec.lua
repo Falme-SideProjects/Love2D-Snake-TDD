@@ -1,6 +1,7 @@
 local mockLove = require("Tests_specs.mocked_love")
 local Apple = require("Scripts.apple")
 local Grid = require("Scripts.grid")
+local Player = require("Scripts.player")
 local Randomizer = require("Scripts.randomizer")
 local Walls = require("Scripts.walls")
 
@@ -256,6 +257,33 @@ describe('Apple => RandomizePositioning => ', function()
 		assert.is_equal(nil, list["02"])
 		assert.is_equal(nil, list["12"])
 		assert.is_equal(nil, list["22"])
+	end)
+
+	
+	it("apple randomized position cannot be on player", function()
+		
+		local list = {}
+
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 2
+		
+		local player = Player()
+
+		apple:Load(grid)
+		player:Load(grid, nil, apple)
+		
+		player:SetPositionAt(0,0)
+
+		for i=1, 30, 1 do
+			apple:RandomizePositioning(nil, {x=player.pointX,y=player.pointY})
+			list[apple.pointX .. "" .. apple.pointY] = 1
+		end
+		
+		assert.is_equal(1, list["11"])
+		assert.is_equal(1, list["10"])
+		assert.is_equal(1, list["01"])
+		assert.is_equal(nil, list["00"])
 	end)
 
 end)
