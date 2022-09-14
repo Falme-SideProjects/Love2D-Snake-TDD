@@ -7,6 +7,10 @@ return function ()
 		velocity = 0,
 		direction = 0,
 		lastDirection = 0,
+		lastPosition = {x=0,y=0},
+		lastTailPosition = {x=0,y=0},
+		tailSize = 0,
+		tails = {},
 		grid = nil,
 		wall = nil,
 		apple = nil,
@@ -17,6 +21,7 @@ return function ()
 		}
 	}
 	
+	-- Grid, wall, apple
 	function Player:Load(grid, wall, apple)
 		self.x = 0
 		self.y = 0
@@ -32,6 +37,8 @@ return function ()
 		local newPosition = self.grid:GetPositionAt(x,y)
 		self.x = newPosition.x
 		self.y = newPosition.y
+		self.lastPosition.x = self.pointX
+		self.lastPosition.y = self.pointY
 		self.pointX = x
 		self.pointY = y
 	end
@@ -70,6 +77,7 @@ return function ()
 			end
 
 			self.lastDirection = self.direction
+			self:UpdateTailPosition()
 		end
 
 		if self.wall ~= nil and self:CheckIfIsWall(self.pointX, self.pointY) then
@@ -77,7 +85,42 @@ return function ()
 		end
 
 		if self.apple ~= nil and self:CheckIfIsApple(self.pointX, self.pointY) then
-			self.apple:RandomizePositioning(self.wall:GetWallPositions())
+			local wallPositions
+			local playerPositions
+			if self.wall ~= nil then 
+				playerPositions = self.wall:GetWallPositions()
+			end
+
+			self:AddTail()
+			self.apple:RandomizePositioning(wallPositions, {x=self.pointX, y=self.pointY})
+		end
+	end
+
+	function Player:UpdateTailPosition()
+
+		if self.tailSize > 1 then
+			self.lastTailPosition.x = self.tails[self.tailSize].x
+			self.lastTailPosition.y = self.tails[self.tailSize].y
+			
+			for i = 1, self.tailSize-1, 1 do
+				self.tails[i+1].x = self.tails[i].x
+				self.tails[i+1].y = self.tails[i].y
+			end
+		end
+
+		if self.tailSize > 0 then
+			self.tails[1].x = self.lastPosition.x
+			self.tails[1].y = self.lastPosition.y
+		end
+
+	end
+
+	function Player:AddTail()
+		self.tailSize = self.tailSize+1
+		if self.tailSize == 1 then
+			table.insert(self.tails, {x=self.lastPosition.x, y=self.lastPosition.y})
+		else
+			table.insert(self.tails, {x=self.lastTailPosition.x, y=self.lastTailPosition.y})
 		end
 	end
 

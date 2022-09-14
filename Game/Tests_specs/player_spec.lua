@@ -418,3 +418,147 @@ describe('Player => Apple Collisions => ', function()
 
 
 end)
+
+describe('Player => Tail Grow => ', function()
+	
+	local player, grid, apple
+	before_each(function()
+		player = Player()
+		apple = Apple()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+	
+	it("Call AddTail when collected an apple", function()
+		
+		local s = spy.on(player, "AddTail")
+		
+		apple:Load(grid)
+		player:Load(grid, nil, apple)
+
+		apple:SetPosition(1,1)
+		player:SetPositionAt(1,1)
+
+		player:Update(0)
+
+		assert.spy(s).was_called(1)
+	end)
+
+	it("On AddTail, add to the tail size +1", function()
+		
+		player:AddTail()
+		assert.is_equal(1, player.tailSize)
+	end)
+	
+	it("On AddTail, add to the tail size +3", function()
+		
+		player:AddTail()
+		player:AddTail()
+		player:AddTail()
+		assert.is_equal(3, player.tailSize)
+	end)
+
+	it("On AddTail, Add new previous position to the head, moving from top", function()
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+
+		player:AddTail()
+		
+		assert.is_equal(0, player.tails[1].x)
+		assert.is_equal(0, player.tails[1].y)
+		
+		assert.is_equal(0, player.pointX)
+		assert.is_equal(1, player.pointY)
+	end)
+	
+
+	it("On AddTail, Add new previous position to the tail, moving from top and right", function()
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+
+		assert.is_equal(0, player.tails[2].x)
+		assert.is_equal(0, player.tails[2].y)
+		
+		assert.is_equal(0, player.tails[1].x)
+		assert.is_equal(1, player.tails[1].y)
+		
+		assert.is_equal(1, player.pointX)
+		assert.is_equal(1, player.pointY)
+	end)
+
+	it("On AddTail, Add new previous position to the tail, moving from top and right and bottom", function()
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 3
+		player:Update(1)
+		player:AddTail()
+
+		assert.is_equal(0, player.tails[3].x)
+		assert.is_equal(0, player.tails[3].y)
+
+		assert.is_equal(0, player.tails[2].x)
+		assert.is_equal(1, player.tails[2].y)
+		
+		assert.is_equal(1, player.tails[1].x)
+		assert.is_equal(1, player.tails[1].y)
+		
+		assert.is_equal(1, player.pointX)
+		assert.is_equal(0, player.pointY)
+	end)
+end)
+
+describe('Player => Tail Draw => ', function()
+	
+	local player, grid, apple
+	before_each(function()
+		player = Player()
+		apple = Apple()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+
+	it("Calling Draw the same times as the size of tail+1 (1)", function()
+		local s = spy.on(love.graphics, "rectangle")
+			
+		player:Draw()
+
+		assert.spy(s).was_called(1)
+	end)
+	
+	it("Calling Draw the same times as the size of tail+1 (2)", function()
+		local s = spy.on(love.graphics, "rectangle")
+		
+		player:Load(grid)
+		player:AddTail()
+
+		player:Draw()
+
+		assert.spy(s).was_called(2)
+	end)
+end)
