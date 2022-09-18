@@ -85,13 +85,13 @@ describe('Apple => Draw => ', function()
 
 		apple:Load(grid)
 
-		local type, x, y, w, h = apple:Draw()
+		local drawn = apple:Draw()
 
-		assert.is_equal("fill", type)
-		assert.is_equal(0, x)
-		assert.is_equal(0, y)
-		assert.is_equal(10, w)
-		assert.is_equal(10, h)
+		assert.is_equal("fill", drawn[1])
+		assert.is_equal(0, drawn[2])
+		assert.is_equal(0, drawn[3])
+		assert.is_equal(10, drawn[4])
+		assert.is_equal(10, drawn[5])
 	end)
 
 	it("Draw Call is correctly set for 40x40 2 grid", function()
@@ -102,13 +102,10 @@ describe('Apple => Draw => ', function()
 
 		apple:Load(grid)
 
-		local type, x, y, w, h = apple:Draw()
+		local drawn = apple:Draw()
+		local expect = {"fill", 0, 0, 20, 20}
 
-		assert.is_equal("fill", type)
-		assert.is_equal(0, x)
-		assert.is_equal(0, y)
-		assert.is_equal(20, w)
-		assert.is_equal(20, h)
+		assert.are.same(expect, drawn)
 	end)
 
 	it("base color is red", function()
@@ -157,10 +154,10 @@ describe('Apple => Draw => ', function()
 		apple:Load(grid)
 		apple:SetPosition(1,2)
 
-		local type, x, y, w, h = apple:Draw()
+		local drawn = apple:Draw()
 
-		assert.is_equal(10, x)
-		assert.is_equal(20, y)
+		assert.is_equal(10, drawn[2])
+		assert.is_equal(20, drawn[3])
 	end)
 
 end)

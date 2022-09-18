@@ -137,6 +137,14 @@ return function ()
 	end
 	
 	function Player:Draw()
+
+		for i = 1, self.tailSize, 1 do
+			love.graphics.rectangle(
+				"fill",
+				self.x,self.y,
+				self.size.width,self.size.height)
+		end
+
 		return love.graphics.rectangle(
 			"fill",
 			self.x,self.y,
