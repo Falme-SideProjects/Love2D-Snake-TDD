@@ -88,7 +88,7 @@ return function ()
 			local wallPositions
 			local playerPositions
 			if self.wall ~= nil then 
-				playerPositions = self.wall:GetWallPositions()
+				wallPositions = self.wall:GetWallPositions()
 			end
 
 			self:AddTail()
@@ -98,20 +98,22 @@ return function ()
 
 	function Player:UpdateTailPosition()
 
-		if self.tailSize > 1 then
+		if self.tailSize > 0 then
 			self.lastTailPosition.x = self.tails[self.tailSize].x
 			self.lastTailPosition.y = self.tails[self.tailSize].y
 			
-			for i = 1, self.tailSize-1, 1 do
-				self.tails[i+1].x = self.tails[i].x
-				self.tails[i+1].y = self.tails[i].y
+			local nextX, nextY = self.tails[1].x, self.tails[1].y
+			
+			self.tails[1].x = self.lastPosition.x
+			self.tails[1].y = self.lastPosition.y
+			for i = 2, self.tailSize, 1 do
+				local cachedX, cachedY = self.tails[i].x, self.tails[i].y
+				self.tails[i].x = nextX
+				self.tails[i].y = nextY
+				nextX, nextY = cachedX, cachedY
 			end
 		end
 
-		if self.tailSize > 0 then
-			self.tails[1].x = self.lastPosition.x
-			self.tails[1].y = self.lastPosition.y
-		end
 
 	end
 
@@ -138,17 +140,28 @@ return function ()
 	
 	function Player:Draw()
 
-		for i = 1, self.tailSize, 1 do
-			love.graphics.rectangle(
-				"fill",
-				self.x,self.y,
-				self.size.width,self.size.height)
+		local drawing = {}
+
+		for i = self.tailSize, 1, -1 do
+			local position = self.grid:GetPositionAt(self.tails[i].x,self.tails[i].y)
+			table.insert(
+						drawing, 
+						love.graphics.rectangle(
+							"fill",
+							position.x,position.y,
+							self.size.width,self.size.height) or nil
+					)
 		end
 
-		return love.graphics.rectangle(
-			"fill",
-			self.x,self.y,
-			self.size.width,self.size.height)
+		table.insert(
+						drawing, 
+						love.graphics.rectangle(
+							"fill",
+							self.x,self.y,
+							self.size.width,self.size.height) or nil
+					)
+
+		return drawing
 	end
 
 	return Player

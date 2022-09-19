@@ -253,22 +253,22 @@ describe('Check if Player is being drawn =>', function()
 	it("Check if before load the draw is on 0,0", function()
 		--player:Load()
 		local drawn = player:Draw()
-		assert.is_equal(0, drawn[2])
-		assert.is_equal(0, drawn[3])
+		assert.is_equal(0, drawn[1][2])
+		assert.is_equal(0, drawn[1][3])
 	end)
 
 	it("Check if after load the draw is on 64,64", function()
 		player:SetPositionAt(1,1)
 		local drawn = player:Draw()
-		assert.is_equal(64, drawn[2])
-		assert.is_equal(64, drawn[3])
+		assert.is_equal(64, drawn[1][2])
+		assert.is_equal(64, drawn[1][3])
 	end)
 
 	it("Check if after load the draw size is 64,64", function()
 		player:SetPositionAt(1,1)
 		local drawn = player:Draw()
-		assert.is_equal(64, drawn[4])
-		assert.is_equal(64, drawn[5])
+		assert.is_equal(64, drawn[1][4])
+		assert.is_equal(64, drawn[1][5])
 	end)
 
 end)
@@ -528,6 +528,69 @@ describe('Player => Tail Grow => ', function()
 		assert.is_equal(1, player.pointX)
 		assert.is_equal(0, player.pointY)
 	end)
+
+	
+	it("Long Snake", function()
+
+		
+		grid.width = 100
+		grid.height = 100
+		grid.scale = 10
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 3
+		player:Update(1)
+		player:AddTail()
+
+		local index = 1;
+		
+		assert.is_equal(1, player.pointX)
+		assert.is_equal(3, player.pointY)
+
+		assert.is_equal(1, player.tails[index].x)
+		assert.is_equal(4, player.tails[index].y)
+		index=index+1
+
+		assert.is_equal(0, player.tails[index].x)
+		assert.is_equal(4, player.tails[index].y)
+		index=index+1
+
+		assert.is_equal(0, player.tails[index].x)
+		assert.is_equal(3, player.tails[index].y)
+		index=index+1
+
+		assert.is_equal(0, player.tails[index].x)
+		assert.is_equal(2, player.tails[index].y)
+		index=index+1
+
+		assert.is_equal(0, player.tails[index].x)
+		assert.is_equal(1, player.tails[index].y)
+		index=index+1
+
+		assert.is_equal(0, player.tails[index].x)
+		assert.is_equal(0, player.tails[index].y)
+		index=index+1
+
+		
+	end)
 end)
 
 describe('Player => Tail Draw => ', function()
@@ -560,5 +623,28 @@ describe('Player => Tail Draw => ', function()
 		player:Draw()
 
 		assert.spy(s).was_called(2)
+	end)
+	
+	
+	it("Compare positioning of tail in draw method", function()
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+
+		local result = player:Draw()
+		--00
+		--01
+		--11
+		
+		assert.are.same({"fill", 0, 0, 32, 32}, result[1])
+		assert.are.same({"fill", 0, 32, 32, 32}, result[2])
+		assert.are.same({"fill", 32, 32, 32, 32}, result[3])
+		assert.are.same(nil, result[4])
 	end)
 end)
