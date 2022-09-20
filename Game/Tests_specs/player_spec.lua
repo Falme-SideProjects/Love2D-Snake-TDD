@@ -561,7 +561,7 @@ describe('Player => Tail Grow => ', function()
 		player:AddTail()
 
 		local index = 1;
-		
+
 		assert.is_equal(1, player.pointX)
 		assert.is_equal(3, player.pointY)
 
@@ -646,5 +646,177 @@ describe('Player => Tail Draw => ', function()
 		assert.are.same({"fill", 0, 32, 32, 32}, result[2])
 		assert.are.same({"fill", 32, 32, 32, 32}, result[3])
 		assert.are.same(nil, result[4])
+	end)
+end)
+
+describe('Player => Head and Tail coloring => ', function()
+	
+	local player, grid, apple
+	before_each(function()
+		player = Player()
+		apple = Apple()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+	
+	it("Color being called thrice in draw", function()
+		local s = spy.on(love.graphics, "setColor")
+		
+		player:Load(grid)
+
+		player:Draw()
+
+		assert.spy(s).was_called(3)
+	end)
+
+	it("GetTailColor returns tailbasecolor", function()
+		
+		local r,g,b,a = player:GetTailColor()
+		
+		assert.is_equal(0/255, r)
+		assert.is_equal(174/255, g)
+		assert.is_equal(239/255, b)
+		assert.is_equal(255/255, a)
+	end)
+	
+
+	it("GetHeadColor returns headbasecolor", function()
+		
+		local r,g,b,a = player:GetHeadColor()
+		
+		assert.is_equal(255/255, r)
+		assert.is_equal(217/255, g)
+		assert.is_equal(63/255, b)
+		assert.is_equal(255/255, a)
+	end)
+end)
+
+describe('Player => Collision with tail => ', function()
+	
+	local player, grid, walls
+	before_each(function()
+		player = Player()
+		walls = Walls()
+		grid = Grid()
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+
+	end)
+	
+	it("If is tail in this position, return true", function()
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+
+		
+		assert.is_equal(true, player:CheckIfIsTail(0,0))
+		assert.is_equal(true, player:CheckIfIsTail(0,1))
+		assert.is_equal(false, player:CheckIfIsTail(0,2))
+		assert.is_equal(false, player:CheckIfIsTail(1,0))
+	end)
+
+	it("Check if moving in direction of a tail, call death method", function()
+		
+		local s = spy.on(player, "Death")
+		
+		player:Load(grid)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+
+		player:Update(1)
+		player:AddTail()
+		
+		player:Update(1)
+		player:AddTail()
+
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+
+		player.direction = 3
+		player:Update(1)
+		player:AddTail()
+
+		player.direction = 2
+		player:Update(1)
+
+		
+
+		assert.spy(s).was_called(1)
+	end)
+end)
+
+describe('Player => On Player filled the screen =>', function()
+	
+	local player, grid, walls
+	before_each(function()
+		player = Player()
+		walls = Walls()
+		grid = Grid()
+
+	end)
+	
+	it("If player filled on 4x4", function()
+
+		local s = spy.on(player, "Victory")
+			
+		grid.width = 128
+		grid.height = 128
+		grid.scale = 4
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+		
+		player:SetPositionAt(1,1)
+		
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+		
+		assert.spy(s).was_called(1)
+	end)
+	
+	it("If player not filled on 5x5", function()
+
+		local s = spy.on(player, "Victory")
+			
+		grid.width = 50
+		grid.height = 50
+		grid.scale = 5
+		
+		walls:Load(grid)
+		player:Load(grid,walls)
+		
+		player:SetPositionAt(1,1)
+		
+		for i = 1, 6, 1 do
+			player:Update(0)
+			player:AddTail()
+		end
+		assert.spy(s).was_called(0)
+		
+		player:Update(0)
+		player:AddTail()
+
+		assert.spy(s).was_called(1)
 	end)
 end)

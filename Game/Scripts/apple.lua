@@ -5,10 +5,10 @@ return function()
 		grid = nil,
 		randomizer = Randomizer(),
 		baseColor = {
-			r = 236,
-			g = 0,
-			b = 140,
-			a = 255
+			r = 236/255,
+			g = 0/255,
+			b = 140/255,
+			a = 255/255
 		},
 		pointX = 0,
 		pointY = 0
@@ -43,7 +43,7 @@ return function()
 		self.pointY = y
 	end
 
-	function Apple:RandomizePositioning(excludeA, excludeB)
+	function Apple:RandomizePositioning(excludeA, excludeB, excludeC)
 
 		::Randomize::
 		self.pointX = self.randomizer:GetRandom(0,self.grid.scale-1)
@@ -62,6 +62,14 @@ return function()
 		if excludeB ~= nil then
 			if excludeB.x == self.pointX and excludeB.y == self.pointY then
 				goto Randomize
+			end
+		end
+		
+		if excludeC ~= nil then 
+			for _, value in ipairs(excludeC) do
+				if value.x == self.pointX and value.y == self.pointY then
+					goto Randomize
+				end
 			end
 		end
 

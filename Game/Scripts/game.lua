@@ -13,11 +13,13 @@ Game = {
 function Game:Load()
 	self.grid.width = 500
 	self.grid.height = 500
-	self.grid.scale = 10
+	self.grid.scale = 15
 
 	self.walls:Load(self.grid)
 	self.apple:Load(self.grid)
 	self.player:Load(self.grid, self.walls, self.apple)
+
+	self.player.velocity=5
 
 	self.player:SetPositionAt(1,1)
 	self.apple:SetPosition(3,3)

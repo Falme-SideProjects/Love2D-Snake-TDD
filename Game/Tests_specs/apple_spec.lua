@@ -109,10 +109,10 @@ describe('Apple => Draw => ', function()
 	end)
 
 	it("base color is red", function()
-		assert.is_equal(236, apple.baseColor.r)
-		assert.is_equal(0, apple.baseColor.g)
-		assert.is_equal(140, apple.baseColor.b)
-		assert.is_equal(255, apple.baseColor.a)
+		assert.is_equal(236/255, apple.baseColor.r)
+		assert.is_equal(0/255, apple.baseColor.g)
+		assert.is_equal(140/255, apple.baseColor.b)
+		assert.is_equal(255/255, apple.baseColor.a)
 	end)
 
 	it("GetBaseColor being called in Draw", function()
@@ -280,6 +280,43 @@ describe('Apple => RandomizePositioning => ', function()
 		assert.is_equal(1, list["11"])
 		assert.is_equal(1, list["10"])
 		assert.is_equal(1, list["01"])
+		assert.is_equal(nil, list["00"])
+	end)
+	
+	it("apple randomized position cannot be on tail", function()
+		
+		local list = {}
+
+		grid.width = 10
+		grid.height = 10
+		grid.scale = 2
+		
+		local player = Player()
+
+		apple:Load(grid)
+		player:Load(grid, nil, apple)
+		
+		--[P][A]
+		--[ ][ ]
+		apple:SetPosition(1,0)
+		player:SetPositionAt(0,0)
+
+		player.direction = 1
+		player:Update(1)
+		player:AddTail()
+		
+		player.direction = 0
+		player:Update(1)
+		player:AddTail()
+
+		for i=1, 30, 1 do
+			apple:RandomizePositioning(nil, {x=player.pointX,y=player.pointY}, player.tails)
+			list[apple.pointX .. "" .. apple.pointY] = 1
+		end
+		
+		assert.is_equal(nil, list["11"])
+		assert.is_equal(1, list["10"])
+		assert.is_equal(nil, list["01"])
 		assert.is_equal(nil, list["00"])
 	end)
 

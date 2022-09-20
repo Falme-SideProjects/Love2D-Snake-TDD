@@ -11,6 +11,18 @@ return function ()
 		lastTailPosition = {x=0,y=0},
 		tailSize = 0,
 		tails = {},
+		tailBasecolor = {
+			r = 0/255,
+			g = 174/255,
+			b = 239/255,
+			a = 255/255
+		},
+		headBasecolor = {
+			r = 255/255,
+			g = 217/255,
+			b = 63/255,
+			a = 255/255
+		},
 		grid = nil,
 		wall = nil,
 		apple = nil,
@@ -60,6 +72,15 @@ return function ()
 		end
 		return false
 	end
+
+	function Player:CheckIfIsTail(x, y)
+		for _, tail in ipairs(self.tails) do
+			if x == tail.x and y == tail.y then
+				return true
+			end
+		end
+		return false
+	end
 	
 	function Player:Update(dt)
 		self.timespanMovement = self.timespanMovement+(dt * self.velocity)
@@ -83,6 +104,10 @@ return function ()
 		if self.wall ~= nil and self:CheckIfIsWall(self.pointX, self.pointY) then
 			self:Death()
 		end
+		
+		if self:CheckIfIsTail(self.pointX, self.pointY) then
+			self:Death()
+		end
 
 		if self.apple ~= nil and self:CheckIfIsApple(self.pointX, self.pointY) then
 			local wallPositions
@@ -92,7 +117,11 @@ return function ()
 			end
 
 			self:AddTail()
-			self.apple:RandomizePositioning(wallPositions, {x=self.pointX, y=self.pointY})
+			self.apple:RandomizePositioning(
+				wallPositions, 
+				{x=self.pointX, y=self.pointY},
+				self.tails
+			)
 		end
 	end
 
@@ -124,9 +153,17 @@ return function ()
 		else
 			table.insert(self.tails, {x=self.lastTailPosition.x, y=self.lastTailPosition.y})
 		end
+
+		if self.grid ~= nil and self.tailSize >= (((self.grid.scale-2)^2)-2) then
+			self:Victory()
+		end
 	end
 
 	function Player:Death()
+		love.window.close()
+	end
+	
+	function Player:Victory()
 		love.window.close()
 	end
 
@@ -142,6 +179,8 @@ return function ()
 
 		local drawing = {}
 
+		love.graphics.setColor(self:GetTailColor())
+
 		for i = self.tailSize, 1, -1 do
 			local position = self.grid:GetPositionAt(self.tails[i].x,self.tails[i].y)
 			table.insert(
@@ -153,6 +192,8 @@ return function ()
 					)
 		end
 
+		love.graphics.setColor(self:GetHeadColor())
+
 		table.insert(
 						drawing, 
 						love.graphics.rectangle(
@@ -160,8 +201,25 @@ return function ()
 							self.x,self.y,
 							self.size.width,self.size.height) or nil
 					)
+		love.graphics.setColor(255,255,255,255)
 
 		return drawing
+	end
+
+	function Player:GetTailColor()
+		return 
+			self.tailBasecolor.r,
+			self.tailBasecolor.g,
+			self.tailBasecolor.b,
+			self.tailBasecolor.a
+	end
+
+	function Player:GetHeadColor()
+		return 
+			self.headBasecolor.r,
+			self.headBasecolor.g,
+			self.headBasecolor.b,
+			self.headBasecolor.a
 	end
 
 	return Player
